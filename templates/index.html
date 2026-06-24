@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Password Hashing</title>
+        <link rel="stylesheet" href="/static/style.css">
+    </head>
+    <body>
+        <h1>Password Hashing</h1>
+        <input type="Password" id="passwordInput" placeholder="Enter a password">
+        <button onclick="hashpassword()">Hash It</button>
+        <div id="results"></div>
+        <h2>Phase 2 - Password Cracker</h2>
+            <select id="algorithmSelect">
+                <option value="md5">MD5</option>
+                <option value="argon2">Argon2 (FULL CHAIN)</option>
+            </select>
+            <input type="text" id="hashInput" placeholder="Paste Argon2 Hash Here">
+            <button onclick="crackpassword()">Crack It</button>
+            <div id="crackResults"></div>
+        <script>
+            async function hashpassword() {
+                const password = document.getElementById('passwordInput').value
+                const response = await fetch('/hash', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify ({password: password})
+                })
+                const results = await response.json()
+                displayResults(results)
+            }
+            function displayResults(results) {
+                const container = document.getElementById('results')
+                container.innerHTML = ''
+                results.forEach(function(item) {
+                    container.innerHTML += `
+                        <div class="hash-card">
+                            <h2>${item[0]}</h2>
+                            <p class="hash-value">${item[1]}</p>
+                            <p class="time">Time: ${item[2]}ms</p>
+                        </div>
+                    `
+                })
+            }
+            async function crackpassword() {
+                console.log("crack function called")
+                const target_hash = document.getElementById('hashInput').value
+                console.log("hash value:", target_hash)
+                const algorithm = document.getElementById('algorithmSelect').value
+                const response = await fetch('/crack', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify ({target_hash: target_hash, algorithm: algorithm})
+                })
+                console.log("response status:", response.status)
+
+                const crackResults = await response.json()
+                displaycrackResults(crackResults)
+            }
+            function displaycrackResults(crackResults) {
+                const container = document.getElementById('crackResults')
+                container.innerHTML = ''
+                if (crackResults[0] ===null) {
+                    container.innerHTML += `
+                    <p>Password not found in wordlist</p>
+                    <p>Cracking bcrypt/Argon2 at this rate would take years</p>`
+                } else {
+                    container.innerHTML += `
+                        <p>Password found: ${crackResults[0]}</p>
+                        <p>Time: ${crackResults[1]}</p>
+                        <p>Attempts: ${crackResults[2]}</p>
+                        `
+                }
+            }
+
+
+
+
+
+
+        </script>
+    </body>
+</html>
