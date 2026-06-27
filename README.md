@@ -1,6 +1,6 @@
 # Password Hashing Visualizer and Cracker
 A web application built with Python and Flask demonstrating password hashing concepts through an offensive and defensive lense. Done as I was learning about these concepts. Actually learned during the process that chaining, 
-especially with the technique I used, is actaully a vulnerability to my secuirty instead of a helper. I knew that Argon2 is not something that can be realistically attacked with dictionary cracking and is the standard in security practice
+especially with the technique I used, is actaully a vulnerability to my secuirty instead of a helper. I knew that Argon2 was not something that can be realistically attacked with dictionary cracking and is the standard in security practice,
 but wanted to see if there was a way
 to add even more security anyway and ended up creating a vulnerability. Through my learning process in this project I learned about a chaining technique that actuallly can add more security and will be using it in the second version of
 this project.
